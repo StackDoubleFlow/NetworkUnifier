@@ -1,10 +1,10 @@
-package org.openredstone.managers;
+package org.openredstone.networkunifier.managers;
 
 import net.luckperms.api.LuckPerms;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.event.message.MessageCreateEvent;
-import org.openredstone.commands.discord.AuthCommand;
-import org.openredstone.commands.discord.DiscordCommand;
+import org.openredstone.networkunifier.commands.discord.AuthCommand;
+import org.openredstone.networkunifier.commands.discord.DiscordCommand;
 
 import java.util.ArrayList;
 

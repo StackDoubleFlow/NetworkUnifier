@@ -1,4 +1,4 @@
-package org.openredstone.commands.discord;
+package org.openredstone.networkunifier.commands.discord;
 
 import org.javacord.api.event.message.MessageCreateEvent;
 

@@ -1,4 +1,4 @@
-package org.openredstone.managers;
+package org.openredstone.networkunifier.managers;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;

@@ -1,11 +1,4 @@
-irc_enabled: true
-irc_channel: "#orebotspam"
-irc_host: "irc.esper.net"
-irc_password: "REDACTED"
-irc_discord_bot_name: "OREDiscord"
-irc_discord_bot_pass: "REDACTED"
-irc_network_bot_name: "ORENetwork"
-irc_network_bot_pass: "REDACTED"
+
 status_update_frequency: 60
 database_host: "localhost"
 database_port: 3306
@@ -21,8 +14,6 @@ discord_token_lifespan: 120
 discord_channel_id: "538879606527098900"
 discord_status_channel_id: "701115144842903615"
 discord_command_character: "!"
-discord_irc_bot_token: "REDACTED"
-discord_irc_bot_playing_message: "on the ORE Network"
 discord_network_bot_token: "REDACTED"
 discord_network_bot_playing_message: "on the ORE Network"
 greeting_message: "%USER% joined the network."
@@ -32,13 +23,6 @@ quirky_message_frequency: 1000
 quirky_greeting_message: "Running %USER%.exe ..."
 quirky_farewell_message: "%USER%.exe has stopped working."
 enable_special_farewells_and_greetings: false
-irc_to_discord_ignore_names:
-  - "OREBot"
-  - "OREDiscord"
-  - "ORENetwork"
-irc_to_game_ignore_names:
-  - "OREDiscord"
-  - "ORENetwork"
 discord_ignore_ids:
   - "550377585192730634"
   - "550377656428920852"
@@ -64,7 +48,3 @@ message_greetings:
   - "Unleash the corr!"
   - "Quick, ask Digitalis about linked lists!"
   - "Ask for nicktatorship while you're at it!"
-custom_irc_ingame_formatting:
-  OREBot: "§cOREBot§7 »§r %MESSAGE%"
-  OREChad: "§cChad§7 »§r %MESSAGE%"
-  OREModded: "§cModded§7 |§r %MESSAGE%"

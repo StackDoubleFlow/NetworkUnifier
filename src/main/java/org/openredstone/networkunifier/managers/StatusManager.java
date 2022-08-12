@@ -1,16 +1,18 @@
-package org.openredstone.managers;
+package org.openredstone.networkunifier.managers;
 
-import net.md_5.bungee.api.ServerPing;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.proxy.server.ServerPing;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.MessageSet;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.util.logging.ExceptionLogger;
+import org.openredstone.networkunifier.NetworkUnifier;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.awt.*;
 import java.time.Instant;
@@ -22,21 +24,26 @@ import java.util.concurrent.TimeUnit;
 public class StatusManager {
 
     private Channel channel;
-    private Plugin plugin;
+    private NetworkUnifier plugin;
+    private ProxyServer proxy;
 
     private final HashMap<String, Boolean> serversOnline = new HashMap<>();
 
-    public StatusManager(Configuration config, DiscordApi api, Plugin plugin) {
-        this.channel = api.getServerTextChannelById(config.getString("discord_status_channel_id")).get();
+    public StatusManager(CommentedConfigurationNode config, DiscordApi api, NetworkUnifier plugin, ProxyServer proxy) {
+        this.channel = api.getServerTextChannelById(config.node("discord_status_channel_id").getString()).get();
         this.plugin = plugin;
-        plugin.getProxy().getScheduler().schedule(this.plugin, this::checkServers, 1, config.getInt("status_update_frequency"), TimeUnit.SECONDS);
-        plugin.getProxy().getScheduler().schedule(this.plugin, () -> updateStatus(generateStatusMessage()), 2, config.getInt("status_update_frequency"), TimeUnit.SECONDS);
+        this.proxy = proxy;
+
+        proxy.getScheduler().buildTask(plugin, this::checkServers).repeat(config.node("status_update_frequency").getInt(), TimeUnit.SECONDS).schedule();
+        proxy.getScheduler().buildTask(plugin, () -> updateStatus(generateStatusMessage())).repeat(config.node("status_update_frequency").getInt(), TimeUnit.SECONDS).schedule();
     }
 
     private void checkServers() {
-        for (ServerInfo server : plugin.getProxy().getServers().values()) {
-            server.ping((ServerPing result, Throwable error) -> {
-                serversOnline.put(server.getName(), error == null);
+
+        for (RegisteredServer server : proxy.getAllServers()) {
+            server.ping().handle((ServerPing result, Throwable error) -> {
+                serversOnline.put(server.getServerInfo().getName(), error == null);
+                return result;
             });
         }
     }
@@ -45,29 +52,30 @@ public class StatusManager {
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setColor(Color.decode("#cd2d0a"))
                 .setTitle("Status")
-                .addField("**Players Online**", String.valueOf(plugin.getProxy().getPlayers().size()))
+                .addField("**Players Online**", String.valueOf(proxy.getAllPlayers().size()))
                 .setThumbnail("https://openredstone.org/wp-content/uploads/2018/07/icon-mini.png")
                 .setTimestamp(Instant.now());
 
-        for (ServerInfo server : plugin.getProxy().getServers().values()) {
-            if (serversOnline.containsKey(server.getName()) && serversOnline.get(server.getName())) {
-                Collection<ProxiedPlayer> players = server.getPlayers();
+        for (RegisteredServer server : proxy.getAllServers()) {
+            ServerInfo serverInfo = server.getServerInfo();
+            if (serversOnline.containsKey(serverInfo.getName()) && serversOnline.get(serverInfo.getName())) {
+                Collection<Player> players = server.getPlayersConnected();
                 if (players.isEmpty()) {
-                    embedBuilder.addField(server.getName() + " (**0**)", "☹");
+                    embedBuilder.addField(serverInfo.getName() + " (**0**)", "☹");
                 } else {
                     StringBuilder message = new StringBuilder();
                     message.append("`");
                     String prefix = "";
-                    for (ProxiedPlayer player : players) {
+                    for (Player player : players) {
                         message.append(prefix);
                         prefix = ", ";
-                        message.append(player.getName());
+                        message.append(player.getUsername());
                     }
                     message.append("`");
-                    embedBuilder.addField(server.getName() + " (**" + players.size() + "**)", message.toString());
+                    embedBuilder.addField(serverInfo.getName() + " (**" + players.size() + "**)", message.toString());
                 }
             } else {
-                embedBuilder.addField(server.getName() + " is **offline**",  "☠");
+                embedBuilder.addField(serverInfo.getName() + " is **offline**",  "☠");
             }
         }
         return embedBuilder;

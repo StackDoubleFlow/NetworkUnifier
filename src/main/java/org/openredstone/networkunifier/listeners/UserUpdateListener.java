@@ -1,12 +1,12 @@
-package org.openredstone.listeners;
+package org.openredstone.networkunifier.listeners;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventBus;
 import net.luckperms.api.event.user.UserDataRecalculateEvent;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.UserManager;
-import org.openredstone.managers.AccountManager;
-import org.openredstone.managers.RoleManager;
+import org.openredstone.networkunifier.managers.AccountManager;
+import org.openredstone.networkunifier.managers.RoleManager;
 
 import java.util.Optional;
 import java.util.UUID;

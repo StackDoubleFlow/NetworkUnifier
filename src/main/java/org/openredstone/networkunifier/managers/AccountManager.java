@@ -1,4 +1,4 @@
-package org.openredstone.managers;
+package org.openredstone.networkunifier.managers;
 
 import java.sql.SQLException;
 

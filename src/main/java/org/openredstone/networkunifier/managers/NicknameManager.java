@@ -1,4 +1,4 @@
-package org.openredstone.managers;
+package org.openredstone.networkunifier.managers;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.server.Server;

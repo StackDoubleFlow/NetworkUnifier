@@ -1,11 +1,11 @@
-package org.openredstone.commands.discord;
+package org.openredstone.networkunifier.commands.discord;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.GroupManager;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.event.message.MessageCreateEvent;
-import org.openredstone.managers.AccountManager;
-import org.openredstone.managers.RoleManager;
+import org.openredstone.networkunifier.managers.AccountManager;
+import org.openredstone.networkunifier.managers.RoleManager;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
